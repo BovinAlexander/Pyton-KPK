@@ -1,0 +1,122 @@
+from turtle import Turtle
+default_scale = 20 #коэффициент масштабирования Чертежника, по умолчанию = 10
+default_pen_size = 1 #толщина линии Чертежника, по умолчанию = 1
+
+def init_drawman():
+    global t, x_current, y_current, _drawman_scale, _drawman_pen_size
+    t = Turtle()
+    t.penup()
+    t.speed(20)
+    x_current = 0
+    y_current = 0
+    t.goto(x_current, y_current)
+    drawman_scale(default_scale)
+    drawman_pen_size(default_pen_size)
+
+def drawman_scale(scale):
+    global _drawman_scale
+    _drawman_scale = scale
+
+def drawman_pen_size(pen_size):
+    """
+    :param pen_size: толщина линии Чертежника, диапазон от 1 до 10
+    """
+    global _drawman_pen_size
+    if pen_size > 10:
+        _drawman_pen_size = t.pensize(10)
+    elif pen_size < 1:
+        _drawman_pen_size = t.pensize(1)
+    else:
+        _drawman_pen_size = t.pensize(pen_size)
+
+def test_drawman():
+    """
+    Тестирование работы Чертёжника
+    :return: None
+    """
+    pen_down()
+    for i in range(5):
+        on_vector(10, 20)
+        on_vector(0, -20)
+    pen_up()
+    to_point(0, 0)
+
+
+def pen_down():
+    t.pendown()
+
+
+def pen_up():
+    t.penup()
+
+
+def on_vector(dx, dy):
+    to_point(x_current + dx, y_current + dy)
+
+
+def to_point(x, y):
+    global x_current, y_current
+    x_current = x
+    y_current = y
+    t.goto(_drawman_scale*x_current, _drawman_scale*y_current)
+
+
+def line(x1,y1,x2,y2,color="#ffffff"):
+    """
+    рисует отрезок
+    :param x1: начало отрезка
+    :param y1:
+    :param x2: конец отрезка
+    :param y2:
+    :param color: цвет линии
+    :return:
+    """
+    t.pencolor(color)
+    pen_up()
+    to_point(x1, y1)
+    pen_down()
+    on_vector(x2, y2)
+    pen_up()
+
+
+def koordinaty():
+    """
+    рисует систему координат с учетом масштаба
+    размер системы координат (-20 на 20)
+    :return:
+    """
+    t.pencolor("#aaaaaa")
+    x=-400
+    y=400
+    for i in range(default_scale*2+1):
+        pen_up()
+        t.goto(x,y)
+        pen_down()
+        t.goto(x+800,y)
+        y-=default_scale
+    x=-400
+    y=400
+    for i in range(default_scale*2+1):
+        pen_up()
+        t.goto(x,y)
+        pen_down()
+        t.goto(x,y-800)
+        x+=default_scale
+    t.pencolor("#000000")
+    pen_up()
+    to_point(-20, 0)
+    pen_down()
+    on_vector(40, 0)
+    pen_up()
+    to_point(0,20)
+    pen_down()
+    on_vector(0,-40)
+
+
+init_drawman()
+if __name__ == '__main__':
+    import time
+    koordinaty()
+    line(-10,10,6,-12,"#fa56cc")
+    #test_drawman()
+    time.sleep(6)
